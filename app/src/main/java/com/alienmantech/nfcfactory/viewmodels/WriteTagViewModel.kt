@@ -1,19 +1,18 @@
-package com.alienmantech.nfcfactory.ui.main
+package com.alienmantech.nfcfactory.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
-class PageViewModel : ViewModel() {
+class WriteTagViewModel : ViewModel() {
 
     private val _index = MutableLiveData<Int>()
     val text: LiveData<String> = Transformations.map(_index) {
         "Hello world from section: $it"
     }
 
-    fun setIndex(index: Int) {
+    fun init(index: Int) {
         _index.value = index
     }
 }

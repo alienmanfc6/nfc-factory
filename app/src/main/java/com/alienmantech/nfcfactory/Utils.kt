@@ -4,15 +4,14 @@ import android.content.Intent
 import android.nfc.*
 import android.nfc.tech.Ndef
 import android.util.Log
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.experimental.and
 
 class Utils {
+    private val TAG = "NFC Creator"
 
     private val appPackage = "com.alienmantech.maroonnova"
     private val mimeType = "application/vnd.at-equipcheck+json"
@@ -112,9 +111,9 @@ class Utils {
                         number++
                         if (prefixSeperatorIndex >= 0) {
                             val prefix = id.substring(0, prefixSeperatorIndex)
-                            idEt.setText("$prefix-$number")
+//                            idEt.setText("$prefix-$number")
                         } else {
-                            idEt.setText(number.toString())
+//                            idEt.setText(number.toString())
                         }
                     }
                 } catch (e: Exception) {
@@ -134,7 +133,7 @@ class Utils {
             jTag.put("id", id)
             NdefRecord
                 .createMime(
-                    MainActivity.mimeType,
+                    mimeType,
                     jTag.toString().toByteArray(Charset.forName("US-ASCII"))
                 )
         } catch (e: JSONException) {
@@ -142,7 +141,7 @@ class Utils {
         }
     }
     private fun createAarRecord(): NdefRecord? {
-        return NdefRecord.createApplicationRecord(MainActivity.appPackage)
+        return NdefRecord.createApplicationRecord(appPackage)
     }
 
     /**
@@ -177,18 +176,15 @@ class Utils {
         return true
     }
 
-    private fun bytesToHexString(src: ByteArray?): String? {
-        val stringBuilder = StringBuilder("0x")
-        if (src == null || src.size <= 0) {
-            return null
+    private val hexArray = "0123456789ABCDEF".toCharArray()
+    private fun bytesToHexString(bytes: ByteArray): String {
+        val hexChars = CharArray(bytes.size * 2)
+        for (j in bytes.indices) {
+            val v = (bytes[j] and 0xFF.toByte()).toInt()
+
+            hexChars[j * 2] = hexArray[v ushr 4]
+            hexChars[j * 2 + 1] = hexArray[v and 0x0F]
         }
-        val buffer = CharArray(2)
-        for (i in src.indices) {
-            buffer[0] = Character.forDigit(src[i] ushr 4 and 0x0F, 16)
-            buffer[1] = Character.forDigit(src[i] and 0x0F, 16)
-            println(buffer)
-            stringBuilder.append(buffer)
-        }
-        return stringBuilder.toString()
+        return String(hexChars)
     }
 }

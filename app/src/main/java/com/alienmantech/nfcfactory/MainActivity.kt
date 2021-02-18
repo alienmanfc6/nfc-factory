@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.alienmantech.nfcfactory.adapters.SectionsPagerAdapter
+import com.alienmantech.nfcfactory.fragments.BaseTagFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -18,15 +19,17 @@ import com.google.android.material.tabs.TabLayout
 class MainActivity : AppCompatActivity() {
 
     var mAdapter: NfcAdapter? = null
+    private lateinit var mViewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = sectionsPagerAdapter
+        mViewPager = findViewById(R.id.view_pager)
+        mViewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(viewPager)
+        tabs.setupWithViewPager(mViewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
         fab.setOnClickListener { view ->
@@ -41,12 +44,11 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        // TODO: find out which fragment is open and do what it do
+        if (intent == null) return
 
-        if (false) {
-            Utils.writeNfcTag(intent, "that data data")
-        } else {
-            Utils.readNfcTag(intent)
+        val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + mViewPager.currentItem)
+        if (mViewPager.currentItem == 0 && fragment != null) {
+            (fragment as BaseTagFragment).processTag(intent)
         }
     }
     

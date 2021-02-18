@@ -1,5 +1,6 @@
 package com.alienmantech.nfcfactory.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +18,7 @@ private const val ARG_PARAM1 = "param1"
  * Use the [ReadTagFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ReadTagFragment : Fragment() {
+class ReadTagFragment : BaseTagFragment() {
     private var param1: String? = null
 
     private lateinit var mViewModel: ReadTagViewModel
@@ -43,6 +44,10 @@ class ReadTagFragment : Fragment() {
             outputTextView.text = it
         })
         return root
+    }
+
+    override fun processTag(intent: Intent) {
+
     }
 
     companion object {

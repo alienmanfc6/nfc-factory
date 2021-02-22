@@ -32,7 +32,7 @@ class WriteTagFragment : BaseTagFragment() {
         }
 
         mViewModel = ViewModelProvider(this).get(WriteTagViewModel::class.java).apply {
-            init(1)
+            init()
         }
     }
 
@@ -42,9 +42,7 @@ class WriteTagFragment : BaseTagFragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_write_tag, container, false)
         inputEditText = root.findViewById(R.id.id_edit_text)
-        mViewModel.text.observe(this, {
-            inputEditText.text = it
-        })
+
         return root
     }
 
@@ -55,7 +53,7 @@ class WriteTagFragment : BaseTagFragment() {
         }
     }
 
-    fun getTextInput(): String {
+    private fun getTextInput(): String {
         return inputEditText.text.toString()
     }
 

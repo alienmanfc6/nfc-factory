@@ -18,60 +18,58 @@ class Utils {
 
         fun readNfcTag(intent: Intent): String {
             val output = java.lang.StringBuilder()
-            if (intent.action == NfcAdapter.ACTION_NDEF_DISCOVERED) {
-                // get raw tag id
-                val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-                output.append("Tag ID: ")
-                if (tag != null) {
-                    output.append(tag.id.toHexString())
-                } else {
-                    output.append("N/A")
-                }
-                output.append("\n\n")
+            // get raw tag id
+            val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+            output.append("Tag ID: ")
+            if (tag != null) {
+                output.append(tag.id.toHexString())
+            } else {
+                output.append("N/A")
+            }
+            output.append("\n\n")
 
-                val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-                if (rawMessages != null) {
-                    val messages = arrayOfNulls<NdefMessage>(rawMessages.size)
-                    for (i in rawMessages.indices) {
-                        messages[i] = rawMessages[i] as NdefMessage
+            val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+            if (rawMessages != null) {
+                val messages = arrayOfNulls<NdefMessage>(rawMessages.size)
+                for (i in rawMessages.indices) {
+                    messages[i] = rawMessages[i] as NdefMessage
 
-                        // start of message
-                        output.append("Message ")
-                        output.append((i + 1).toString())
+                    // start of message
+                    output.append("Message ")
+                    output.append((i + 1).toString())
+                    output.append(" of ")
+                    output.append(rawMessages.size.toString())
+                    output.append(": \n")
+                    output.append("---------------------------------")
+                    output.append("\n")
+                    val records = messages[i]!!.records
+                    for (r in records.indices) {
+                        val record = records[r]
+                        output.append("  Record ")
+                        output.append((r + 1).toString())
                         output.append(" of ")
-                        output.append(rawMessages.size.toString())
+                        output.append(records.size.toString())
                         output.append(": \n")
-                        output.append("---------------------------------")
-                        output.append("\n")
-                        val records = messages[i]!!.records
-                        for (r in records.indices) {
-                            val record = records[r]
-                            output.append("  Record ")
-                            output.append((r + 1).toString())
-                            output.append(" of ")
-                            output.append(records.size.toString())
-                            output.append(": \n")
 
-                            // mime type
-                            output.append("  MIME: ")
-                            val mime = record.toMimeType()
-                            if (mime == null) {
-                                output.append("NULL")
-                            } else {
-                                output.append(mime)
-                            }
-                            output.append("\n")
-
-                            // payload
-                            output.append("  Payload: ")
-                            val payload = record.payload
-                            if (payload == null) {
-                                output.append("NULL")
-                            } else {
-                                output.append(String(payload, Charset.forName("US-ASCII")))
-                            }
-                            output.append("\n\n")
+                        // mime type
+                        output.append("  MIME: ")
+                        val mime = record.toMimeType()
+                        if (mime == null) {
+                            output.append("NULL")
+                        } else {
+                            output.append(mime)
                         }
+                        output.append("\n")
+
+                        // payload
+                        output.append("  Payload: ")
+                        val payload = record.payload
+                        if (payload == null) {
+                            output.append("NULL")
+                        } else {
+                            output.append(String(payload, Charset.forName("US-ASCII")))
+                        }
+                        output.append("\n\n")
                     }
                 }
             }

@@ -48,8 +48,7 @@ class ReadTagFragment : BaseTagFragment() {
     }
 
     override fun processTag(intent: Intent) {
-        val result = Utils.readNfcTag(intent)
-        mViewModel.updateOutput(result)
+        mViewModel.updateOutput(Utils.readNfcTag(intent))
     }
 
     companion object {

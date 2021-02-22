@@ -11,7 +11,7 @@ class ReadTagViewModel : ViewModel() {
 
     }
 
-    fun updateOutput() {
-        output.postValue("test")
+    fun updateOutput(a: String) {
+        output.postValue(a)
     }
 }

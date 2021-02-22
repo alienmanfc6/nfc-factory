@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.alienmantech.nfcfactory.R
+import com.alienmantech.nfcfactory.Utils
 import com.alienmantech.nfcfactory.viewmodels.ReadTagViewModel
 
 private const val ARG_PARAM1 = "param1"
@@ -47,7 +48,8 @@ class ReadTagFragment : BaseTagFragment() {
     }
 
     override fun processTag(intent: Intent) {
-
+        val result = Utils.readNfcTag(intent)
+        mViewModel.updateOutput(result)
     }
 
     companion object {

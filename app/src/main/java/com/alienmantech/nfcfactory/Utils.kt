@@ -17,13 +17,19 @@ class Utils {
         val appPackage = "com.alienmantech.maroonnova"
         val mimeType = "application/vnd.at-equipcheck+json"
 
-        fun readNfcTag(intent: Intent?): String {
+        fun readNfcTag(intent: Intent): String {
             val output = java.lang.StringBuilder()
             if (intent != null) { // && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
                 val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 
                 // get raw tag data
                 val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+
+                if (tag != null) {
+                    val id = tag.id
+                    val rawTagId = bytesToHexString(id)
+                }
+
                 val rawTagId = bytesToHexString(tag!!.id)
                 output.append("Tag ID: ")
                 output.append(rawTagId)
@@ -180,14 +186,18 @@ class Utils {
 
         private val hexArray = "0123456789ABCDEF".toCharArray()
         private fun bytesToHexString(bytes: ByteArray): String {
-            val hexChars = CharArray(bytes.size * 2)
-            for (j in bytes.indices) {
-                val v = (bytes[j] and 0xFF.toByte()).toInt()
+//            val hexChars = CharArray(bytes.size * 2)
+//            for (j in bytes.indices) {
+//                val v = (bytes[j] and 0xFF.toByte()).toInt()
+//
+//                hexChars[j * 2] = hexArray[v ushr 4]
+//                hexChars[j * 2 + 1] = hexArray[v and 0x0F]
+//            }
+//            return String(hexChars)
 
-                hexChars[j * 2] = hexArray[v ushr 4]
-                hexChars[j * 2 + 1] = hexArray[v and 0x0F]
-            }
-            return String(hexChars)
+            return bytes.toHexString()
         }
+
+        fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
     }
 }

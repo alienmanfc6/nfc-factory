@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         if (intent == null) return
 
         val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + mViewPager.currentItem)
-        if (mViewPager.currentItem == 0 && fragment != null) {
+        if (fragment != null) {
             (fragment as BaseTagFragment).processTag(intent)
         }
     }

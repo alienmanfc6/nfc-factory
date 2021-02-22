@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.alienmantech.nfcfactory.R
+import com.alienmantech.nfcfactory.Utils
 import com.alienmantech.nfcfactory.viewmodels.WriteTagViewModel
 
 private const val ARG_PARAM1 = "param1"
@@ -21,6 +22,7 @@ private const val ARG_PARAM1 = "param1"
 class WriteTagFragment : BaseTagFragment() {
     private var param1: String? = null
 
+    private lateinit var inputEditText: TextView
     private lateinit var mViewModel: WriteTagViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,7 @@ class WriteTagFragment : BaseTagFragment() {
             savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_write_tag, container, false)
-        val inputEditText: TextView = root.findViewById(R.id.id_edit_text)
+        inputEditText = root.findViewById(R.id.id_edit_text)
         mViewModel.text.observe(this, {
             inputEditText.text = it
         })
@@ -47,7 +49,14 @@ class WriteTagFragment : BaseTagFragment() {
     }
 
     override fun processTag(intent: Intent) {
+        val input = getTextInput()
+        if (input.isNotEmpty()) {
+            Utils.writeNfcTag(intent, input)
+        }
+    }
 
+    fun getTextInput(): String {
+        return inputEditText.text.toString()
     }
 
     companion object {

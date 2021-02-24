@@ -11,12 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.alienmantech.nfcfactory.adapters.SectionsPagerAdapter
+import com.alienmantech.nfcfactory.barcodereader.BarcodeCaptureActivity
 import com.alienmantech.nfcfactory.fragments.BaseTagFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 
 class MainActivity : AppCompatActivity() {
+    private val RC_BARCODE_SCANNER = 8674
 
     var mAdapter: NfcAdapter? = null
     private lateinit var mViewPager: ViewPager
@@ -33,8 +34,8 @@ class MainActivity : AppCompatActivity() {
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            val i = Intent(view.context, BarcodeCaptureActivity::class.java)
+            startActivityForResult(i, RC_BARCODE_SCANNER)
         }
 
         // start nfc stuff
@@ -76,6 +77,17 @@ class MainActivity : AppCompatActivity() {
 
         if (mAdapter != null) {
             mAdapter!!.disableForegroundDispatch(this)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_BARCODE_SCANNER) {
+            val scannedBarcode = data?.getStringExtra(BarcodeCaptureActivity.RETURN_BARCODE).toString()
+            if (scannedBarcode.isNotEmpty()) {
+
+            }
         }
     }
 

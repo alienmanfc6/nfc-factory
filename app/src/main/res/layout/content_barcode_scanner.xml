@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.alienmantech.nfcfactory.barcodereader.BarcodeCaptureActivity"
+    tools:showIn="@layout/activity_barcode_scanner">
+
+    <RelativeLayout
+        android:id="@+id/camera_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Camera preview -->
+        <com.alienmantech.nfcfactory.barcodereader.ui.camera.CameraSourcePreview
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.alienmantech.nfcfactory.barcodereader.ui.camera.GraphicOverlay
+                android:id="@+id/graphicOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.alienmantech.nfcfactory.barcodereader.ui.camera.CameraSourcePreview>
+
+        <!-- Focal point overlay -->
+        <View
+            android:id="@+id/overlay_center"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="-100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"/>
+
+        <View
+            android:id="@+id/overlay_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/overlay_center"
+            android:layout_alignParentTop="true"
+            android:background="#cc000000" />
+
+        <View
+            android:id="@+id/overlay_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/overlay_center"
+            android:layout_alignParentBottom="true"
+            android:background="#cc000000" />
+
+        <View
+            android:id="@+id/overlay_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/overlay_top"
+            android:layout_above="@id/overlay_bottom"
+            android:layout_toLeftOf="@id/overlay_center"
+            android:background="#cc000000" />
+
+        <View
+            android:id="@+id/overlay_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/overlay_top"
+            android:layout_above="@id/overlay_bottom"
+            android:layout_toRightOf="@id/overlay_center"
+            android:background="#cc000000" />
+
+        <View
+            android:id="@+id/overlay_laser_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/overlay_top"
+            android:layout_above="@id/overlay_bottom"
+            android:layout_toRightOf="@id/overlay_left"
+            android:layout_toLeftOf="@id/overlay_right"
+            android:layout_marginTop="99dp"
+            android:layout_marginBottom="99dp"
+            android:background="#ff0000" />
+    </RelativeLayout>
+
+</RelativeLayout>

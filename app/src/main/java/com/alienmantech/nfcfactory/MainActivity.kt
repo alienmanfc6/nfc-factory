@@ -84,9 +84,13 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_BARCODE_SCANNER) {
-            val scannedBarcode = data?.getStringExtra(BarcodeCaptureActivity.RETURN_BARCODE).toString()
-            if (scannedBarcode.isNotEmpty()) {
-
+            val format = -1 //TODO: get the format
+            val barcode = data?.getStringExtra(BarcodeCaptureActivity.RETURN_BARCODE).toString()
+            if (barcode.isNotEmpty()) {
+                val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + mViewPager.currentItem)
+                if (fragment != null) {
+                    (fragment as BaseTagFragment).processBarcodeRead(format, barcode)
+                }
             }
         }
     }

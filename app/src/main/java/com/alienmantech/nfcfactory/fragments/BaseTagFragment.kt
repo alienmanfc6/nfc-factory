@@ -15,4 +15,10 @@ open class BaseTagFragment : Fragment() {
 
     }
 
+    /**
+     * When a barcode is scanned by the main activity we can read it here.
+     */
+    open fun processBarcodeRead(format: Int, barcode: String) {
+
+    }
 }

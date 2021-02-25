@@ -7,6 +7,7 @@ import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.NumberFormatException
 import java.nio.charset.Charset
 
 class Utils {
@@ -139,6 +140,51 @@ class Utils {
                 }
             }
             return true
+        }
+
+        fun splitBarcode(barcode: String): Triple<String, Int, String> {
+            var prefixIndex = barcode.length
+            var suffixIndex = barcode.length
+
+            for (i in barcode.indices) {
+                if (barcode[i].isDigit()) {
+                    prefixIndex = i
+                    break
+                }
+            }
+
+            val startIndex = if (prefixIndex == -1) 0 else prefixIndex
+            for (i in startIndex until barcode.length) {
+                if (!barcode[i].isDigit()) {
+                    suffixIndex = i
+                    break
+                }
+            }
+
+            var prefix = ""
+            if (prefixIndex >= 0) {
+                prefix = barcode.substring(0, prefixIndex)
+            }
+
+            var number = 0
+            try {
+                if (prefixIndex >= 0 && suffixIndex >= 0) {
+                    number = barcode.substring(prefixIndex, suffixIndex).toInt()
+                } else if (prefixIndex >= 0) {
+                    number = barcode.substring(prefixIndex).toInt()
+                } else if (suffixIndex >= 0) {
+                    number = barcode.substring(0, prefixIndex).toInt()
+                }
+            } catch (e: NumberFormatException) {
+                number = 0
+            }
+
+            var suffix = ""
+            if (suffixIndex >= 0) {
+                suffix = barcode.substring(suffixIndex)
+            }
+
+            return Triple(prefix, number, suffix)
         }
 
         private fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }

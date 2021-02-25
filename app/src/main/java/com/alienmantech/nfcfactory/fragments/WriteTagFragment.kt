@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.alienmantech.nfcfactory.R
@@ -22,7 +23,9 @@ private const val ARG_PARAM1 = "param1"
 class WriteTagFragment : BaseTagFragment() {
     private var param1: String? = null
 
-    private lateinit var inputEditText: TextView
+    private lateinit var prefixEditText: EditText
+    private lateinit var numberEditText: EditText
+    private lateinit var suffixEditText: EditText
     private lateinit var mViewModel: WriteTagViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,20 +44,40 @@ class WriteTagFragment : BaseTagFragment() {
             savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_write_tag, container, false)
-        inputEditText = root.findViewById(R.id.id_edit_text)
+        prefixEditText = root.findViewById(R.id.prefix_edit_text)
+        numberEditText = root.findViewById(R.id.number_edit_text)
+        suffixEditText = root.findViewById(R.id.suffix_edit_text)
 
         return root
     }
 
     override fun processTag(intent: Intent) {
-        val input = getTextInput()
+        val input = getBarcodeInput()
         if (input.isNotEmpty()) {
-            Utils.writeNfcTag(intent, input)
+            val result = Utils.writeNfcTag(intent, input)
+            if (result) {
+                increaseNumber(1)
+            }
         }
     }
 
-    private fun getTextInput(): String {
-        return inputEditText.text.toString()
+    override fun processBarcodeRead(format: Int, barcode: String) {
+        super.processBarcodeRead(format, barcode)
+
+        val result = Utils.splitBarcode(barcode)
+        prefixEditText.setText(result.first)
+        numberEditText.setText(result.second.toString())
+        suffixEditText.setText(result.third)
+    }
+
+    private fun getBarcodeInput(): String {
+        return prefixEditText.text.toString() + numberEditText.text.toString() + suffixEditText.text.toString()
+    }
+
+    private fun increaseNumber(increaseBy: Int) {
+        var number = Integer.parseInt(numberEditText.text.toString())
+        number += increaseBy
+        numberEditText.setText(number.toString())
     }
 
     companion object {

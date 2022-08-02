@@ -17,20 +17,22 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 
 class MainActivity : AppCompatActivity() {
-    private val RC_BARCODE_SCANNER = 8674
+    companion object {
+        private const val RC_BARCODE_SCANNER = 8674
+    }
 
-    var mAdapter: NfcAdapter? = null
-    private lateinit var mViewPager: ViewPager
+    private var adapter: NfcAdapter? = null
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        mViewPager = findViewById(R.id.view_pager)
-        mViewPager.adapter = sectionsPagerAdapter
+        viewPager = findViewById(R.id.view_pager)
+        viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(mViewPager)
+        tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
         fab.setOnClickListener { view ->
@@ -47,12 +49,13 @@ class MainActivity : AppCompatActivity() {
 
         if (intent == null) return
 
-        val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + mViewPager.currentItem)
+        val fragment =
+            supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + viewPager.currentItem)
         if (fragment != null) {
             (fragment as BaseTagFragment).processTag(intent)
         }
     }
-    
+
     override fun onResume() {
         super.onResume()
 
@@ -75,9 +78,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-        if (mAdapter != null) {
-            mAdapter!!.disableForegroundDispatch(this)
-        }
+        adapter?.disableForegroundDispatch(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             val format = -1 //TODO: get the format
             val barcode = data?.getStringExtra(BarcodeCaptureActivity.RETURN_BARCODE).toString()
             if (barcode.isNotEmpty()) {
-                val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + mViewPager.currentItem)
+                val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + viewPager.currentItem)
                 if (fragment != null) {
                     (fragment as BaseTagFragment).processBarcodeRead(format, barcode)
                 }
@@ -96,12 +97,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNfc() {
-        mAdapter = NfcAdapter.getDefaultAdapter(this)
-        if (mAdapter == null) {
+        adapter = NfcAdapter.getDefaultAdapter(this)
+        if (adapter == null) {
             Toast.makeText(applicationContext, "NFC not supported.", Toast.LENGTH_SHORT).show()
             return
         }
-        if (!mAdapter!!.isEnabled) {
+        if (adapter?.isEnabled == false) {
             Toast.makeText(applicationContext, "NFC not enabled.", Toast.LENGTH_SHORT).show()
             return
         }

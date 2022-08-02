@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alienmantech.nfcfactory.barcodereader;
+package com.alienmantech.nfcfactory.barcodereader
 
-public class BarcodeDetectedCallback {
-    private BarcodeDetectedInterface ie;
-    public BarcodeDetectedCallback(BarcodeDetectedInterface i) {
-        ie = i;
-    }
+class BarcodeDetectedCallback(
+    private val ie: BarcodeDetectedInterface
+) {
 
-    public void triggerBarcodeDetected(int format, String value) {
-        ie.onBarcodeDetected(format, value);
+    fun triggerBarcodeDetected(format: Int, value: String) {
+        ie.onBarcodeDetected(format, value)
     }
 }
-

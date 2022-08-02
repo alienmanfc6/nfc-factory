@@ -13,11 +13,7 @@ import com.alienmantech.nfcfactory.Utils
 import com.alienmantech.nfcfactory.viewmodels.WriteTagViewModel
 import java.lang.NumberFormatException
 
-private const val ARG_PARAM1 = "param1"
-
 class WriteTagFragment : BaseTagFragment() {
-    private var param1: String? = null
-
     private lateinit var prefixEditText: EditText
     private lateinit var numberEditText: EditText
     private lateinit var suffixEditText: EditText
@@ -28,13 +24,8 @@ class WriteTagFragment : BaseTagFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-        }
 
-        viewModel = ViewModelProvider(this).get(WriteTagViewModel::class.java).apply {
-            init()
-        }
+        viewModel = ViewModelProvider(this).get(WriteTagViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -72,6 +63,10 @@ class WriteTagFragment : BaseTagFragment() {
     override fun processBarcodeRead(format: Int, barcode: String) {
         super.processBarcodeRead(format, barcode)
 
+        setBarcode(barcode)
+    }
+
+    fun setBarcode(barcode: String) {
         val result = Utils.splitBarcode(barcode)
         prefixEditText.setText(result.first)
         numberEditText.setText(result.second.toString())
@@ -90,15 +85,5 @@ class WriteTagFragment : BaseTagFragment() {
         } catch (e: NumberFormatException) {
 
         }
-    }
-
-    companion object {
-
-        fun newInstance(param1: String) =
-                WriteTagFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                    }
-                }
     }
 }

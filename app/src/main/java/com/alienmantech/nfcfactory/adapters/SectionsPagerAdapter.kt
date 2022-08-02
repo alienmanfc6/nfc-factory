@@ -24,20 +24,13 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager)
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         return when (position) {
-            0 -> {
-                ReadTagFragment.newInstance("")
-            }
-            1 -> {
-                WriteTagFragment.newInstance("")
-            }
-            else -> {
-                //TODO: some other fallback
-                WriteTagFragment.newInstance("")
-            }
+            0 -> ReadTagFragment()
+            1 -> WriteTagFragment()
+            else -> WriteTagFragment()
         }
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return context.resources.getString(TAB_TITLES[position])
     }
 

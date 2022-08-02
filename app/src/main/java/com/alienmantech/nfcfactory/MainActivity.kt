@@ -13,6 +13,9 @@ import androidx.viewpager.widget.ViewPager
 import com.alienmantech.nfcfactory.adapters.SectionsPagerAdapter
 import com.alienmantech.nfcfactory.barcodereader.BarcodeCaptureActivity
 import com.alienmantech.nfcfactory.fragments.BaseTagFragment
+import com.alienmantech.nfcfactory.fragments.ReadTagFragment
+import com.alienmantech.nfcfactory.fragments.WriteTagFragment
+import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 
@@ -30,6 +33,25 @@ class MainActivity : AppCompatActivity() {
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         viewPager = findViewById(R.id.view_pager)
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                initFragmentCallbacks()
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+        })
+
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
@@ -40,7 +62,6 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(i, RC_BARCODE_SCANNER)
         }
 
-        // start nfc stuff
         initNfc()
     }
 
@@ -88,7 +109,8 @@ class MainActivity : AppCompatActivity() {
             val format = -1 //TODO: get the format
             val barcode = data?.getStringExtra(BarcodeCaptureActivity.RETURN_BARCODE).toString()
             if (barcode.isNotEmpty()) {
-                val fragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + viewPager.currentItem)
+                val fragment =
+                    supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.view_pager.toString() + ":" + viewPager.currentItem)
                 if (fragment != null) {
                     (fragment as BaseTagFragment).processBarcodeRead(format, barcode)
                 }
@@ -105,6 +127,30 @@ class MainActivity : AppCompatActivity() {
         if (adapter?.isEnabled == false) {
             Toast.makeText(applicationContext, "NFC not enabled.", Toast.LENGTH_SHORT).show()
             return
+        }
+    }
+
+    private fun initFragmentCallbacks() {
+        for (fragment in supportFragmentManager.fragments) {
+            (fragment as? ReadTagFragment)?.callback =
+                object : ReadTagFragment.ReadTagFragmentCallbacks {
+                    override fun setWriteBarcode(barcode: String?) {
+                        setWriteFragmentBarcode(barcode)
+                        moveToPage(1)
+                    }
+                }
+        }
+    }
+
+    private fun moveToPage(position: Int) {
+        viewPager.currentItem = position
+    }
+
+    fun setWriteFragmentBarcode(barcode: String?) {
+        if (barcode != null) {
+            for (fragment in supportFragmentManager.fragments) {
+                (fragment as? WriteTagFragment)?.setBarcode(barcode)
+            }
         }
     }
 }

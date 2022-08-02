@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">NFC Factory</string>
+
+    <string name="common_ok">OK</string>
+
     <string name="tab_text_1">Read Tag</string>
     <string name="tab_text_2">Write Tag</string>
+
+    <string name="permission_camera_rationale">Access to the camera and storage is needed for barcode scanning.</string>
+    <string name="low_storage_error">Device is low on storage. Unable to scan barcode.</string>
 
 </resources>

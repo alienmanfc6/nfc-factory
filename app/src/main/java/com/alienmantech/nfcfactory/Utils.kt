@@ -4,9 +4,12 @@ import android.content.Intent
 import android.nfc.*
 import android.nfc.tech.Ndef
 import android.util.Log
+import com.alienmantech.nfcfactory.models.CustomNfcTag
+import com.alienmantech.nfcfactory.models.NfcTag
+import com.google.gson.Gson
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
+import java.lang.NumberFormatException
 import java.nio.charset.Charset
 
 class Utils {
@@ -16,65 +19,44 @@ class Utils {
         private const val appPackage = "com.alienmantech.maroonnova"
         private const val mimeType = "application/vnd.at-equipcheck+json"
 
-        fun readNfcTag(intent: Intent): String {
-            val output = java.lang.StringBuilder()
-            // get raw tag id
+        fun readNfcTag(intent: Intent): NfcTag {
+            val nfcTag = NfcTag()
+
             val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-            output.append("Tag ID: ")
             if (tag != null) {
-                output.append(tag.id.toHexString())
-            } else {
-                output.append("N/A")
+                nfcTag.id = tag.id.toHexString()
             }
-            output.append("\n\n")
 
             val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
             if (rawMessages != null) {
                 val messages = arrayOfNulls<NdefMessage>(rawMessages.size)
                 for (i in rawMessages.indices) {
+
+                    val nfcMessage = NfcTag.Message()
+
                     messages[i] = rawMessages[i] as NdefMessage
 
-                    // start of message
-                    output.append("Message ")
-                    output.append((i + 1).toString())
-                    output.append(" of ")
-                    output.append(rawMessages.size.toString())
-                    output.append(": \n")
-                    output.append("---------------------------------")
-                    output.append("\n")
-                    val records = messages[i]!!.records
-                    for (r in records.indices) {
-                        val record = records[r]
-                        output.append("  Record ")
-                        output.append((r + 1).toString())
-                        output.append(" of ")
-                        output.append(records.size.toString())
-                        output.append(": \n")
+                    messages[i]?.records?.let { records ->
+                        for (record in records) {
+                            val nfcRecord = NfcTag.Message.Record()
 
-                        // mime type
-                        output.append("  MIME: ")
-                        val mime = record.toMimeType()
-                        if (mime == null) {
-                            output.append("NULL")
-                        } else {
-                            output.append(mime)
-                        }
-                        output.append("\n")
+                            record.toMimeType()?.let { mime ->
+                                nfcRecord.mime = mime
+                            }
 
-                        // payload
-                        output.append("  Payload: ")
-                        val payload = record.payload
-                        if (payload == null) {
-                            output.append("NULL")
-                        } else {
-                            output.append(String(payload, Charset.forName("US-ASCII")))
+                            record.payload?.let { payload ->
+                                nfcRecord.payload = String(payload, Charset.forName("US-ASCII"))
+                            }
+
+                            nfcMessage.addRecord(nfcRecord)
                         }
-                        output.append("\n\n")
                     }
+
+                    nfcTag.addMessage(nfcMessage)
                 }
             }
 
-            return output.toString()
+            return nfcTag
         }
 
         fun writeNfcTag(intent: Intent, id: String): Boolean {
@@ -91,15 +73,18 @@ class Utils {
         }
 
         private fun createMainRecord(id: String): NdefRecord? {
+            val tag = CustomNfcTag(
+                version = 1,
+                id = id
+            )
+
+            val jTag = Gson().toJson(tag)
+
             return try {
-                val jTag = JSONObject()
-                jTag.put("v", 1)
-                jTag.put("id", id)
-                NdefRecord
-                    .createMime(
-                        mimeType,
-                        jTag.toString().toByteArray(Charset.forName("US-ASCII"))
-                    )
+                NdefRecord.createMime(
+                    mimeType,
+                    jTag.toByteArray(Charset.forName("US-ASCII"))
+                )
             } catch (e: JSONException) {
                 null
             }
@@ -139,6 +124,51 @@ class Utils {
                 }
             }
             return true
+        }
+
+        fun splitBarcode(barcode: String): Triple<String, Int, String> {
+            var prefixIndex = barcode.length
+            var suffixIndex = barcode.length
+
+            for (i in barcode.indices) {
+                if (barcode[i].isDigit()) {
+                    prefixIndex = i
+                    break
+                }
+            }
+
+            val startIndex = if (prefixIndex == -1) 0 else prefixIndex
+            for (i in startIndex until barcode.length) {
+                if (!barcode[i].isDigit()) {
+                    suffixIndex = i
+                    break
+                }
+            }
+
+            var prefix = ""
+            if (prefixIndex >= 0) {
+                prefix = barcode.substring(0, prefixIndex)
+            }
+
+            var number = 0
+            try {
+                if (prefixIndex >= 0 && suffixIndex >= 0) {
+                    number = barcode.substring(prefixIndex, suffixIndex).toInt()
+                } else if (prefixIndex >= 0) {
+                    number = barcode.substring(prefixIndex).toInt()
+                } else if (suffixIndex >= 0) {
+                    number = barcode.substring(0, prefixIndex).toInt()
+                }
+            } catch (e: NumberFormatException) {
+                number = 0
+            }
+
+            var suffix = ""
+            if (suffixIndex >= 0) {
+                suffix = barcode.substring(suffixIndex)
+            }
+
+            return Triple(prefix, number, suffix)
         }
 
         private fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }

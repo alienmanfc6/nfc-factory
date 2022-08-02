@@ -4,7 +4,5 @@ import androidx.lifecycle.ViewModel
 
 class WriteTagViewModel : ViewModel() {
 
-    fun init() {
 
-    }
 }

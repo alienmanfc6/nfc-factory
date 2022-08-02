@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +28,9 @@ class WriteTagFragment : BaseTagFragment() {
     private lateinit var numberEditText: EditText
     private lateinit var suffixEditText: EditText
     private lateinit var mViewModel: WriteTagViewModel
+    private lateinit var increaseButton: Button
+    private lateinit var decreaseButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,16 @@ class WriteTagFragment : BaseTagFragment() {
         prefixEditText = root.findViewById(R.id.prefix_edit_text)
         numberEditText = root.findViewById(R.id.number_edit_text)
         suffixEditText = root.findViewById(R.id.suffix_edit_text)
+        increaseButton = root.findViewById(R.id.increase_number_button)
+        decreaseButton = root.findViewById(R.id.decrease_number_button)
+
+        increaseButton.setOnClickListener {
+            increaseNumber(1)
+        }
+
+        decreaseButton.setOnClickListener {
+            increaseNumber(-1)
+        }
 
         return root
     }

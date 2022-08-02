@@ -15,6 +15,7 @@
         android:text="Instructions" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barcode_edit_text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/main_label">
@@ -48,5 +49,29 @@
             app:layout_constraintStart_toEndOf="@id/number_edit_text"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/barcode_edit_text_container"
+        android:layout_marginTop="12dp"
+        android:layout_centerHorizontal="true"
+        >
+
+        <Button
+            android:id="@+id/decrease_number_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/increase_number_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="+" />
+
+    </LinearLayout>
 
 </RelativeLayout>

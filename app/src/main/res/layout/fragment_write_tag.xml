@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Instructions" />
+        android:text="@string/write_description" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/barcode_edit_text_container"
@@ -25,7 +25,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Prefix"
+            android:hint="@string/write_prefix_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Barcode Number"
+            android:hint="@string/write_number_label"
             app:layout_constraintStart_toEndOf="@id/prefix_edit_text"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Suffix"
+            android:hint="@string/write_suffix_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/number_edit_text"
             app:layout_constraintTop_toTopOf="parent" />
@@ -62,14 +62,14 @@
             android:id="@+id/decrease_number_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="@string/write_decrement_button" />
 
         <Button
             android:id="@+id/increase_number_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="+" />
+            android:text="@string/write_increment_button" />
 
     </LinearLayout>
 

@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/read_output"
         android:layout_centerHorizontal="true"
-        android:text="Write Next" />
+        android:text="@string/write_next_button" />
 
 </RelativeLayout>

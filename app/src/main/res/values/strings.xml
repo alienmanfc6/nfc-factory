@@ -6,6 +6,18 @@
     <string name="tab_text_1">Read Tag</string>
     <string name="tab_text_2">Write Tag</string>
 
+    <!-- Read Tab -->
+    <string name="write_next_button">Set Barcode</string>
+
+    <!-- Write Tab -->
+    <string name="write_description">Write Tags</string>
+    <string name="write_prefix_label">Prefix</string>
+    <string name="write_number_label">Barcode Number</string>
+    <string name="write_suffix_label">Suffix</string>
+
+    <string name="write_decrement_button">-</string>
+    <string name="write_increment_button">+</string>
+
     <string name="permission_camera_rationale">Access to the camera and storage is needed for barcode scanning.</string>
     <string name="low_storage_error">Device is low on storage. Unable to scan barcode.</string>
 

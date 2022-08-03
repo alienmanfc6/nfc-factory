@@ -15,7 +15,6 @@ import com.alienmantech.nfcfactory.barcodereader.BarcodeCaptureActivity
 import com.alienmantech.nfcfactory.fragments.BaseTagFragment
 import com.alienmantech.nfcfactory.fragments.ReadTagFragment
 import com.alienmantech.nfcfactory.fragments.WriteTagFragment
-import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         private const val RC_BARCODE_SCANNER = 8674
     }
 
-    private var adapter: NfcAdapter? = null
+    private var nfcAdapter: NfcAdapter? = null
     private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-        adapter?.disableForegroundDispatch(this)
+        nfcAdapter?.disableForegroundDispatch(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -119,12 +118,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNfc() {
-        adapter = NfcAdapter.getDefaultAdapter(this)
-        if (adapter == null) {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        if (nfcAdapter == null) {
             Toast.makeText(applicationContext, "NFC not supported.", Toast.LENGTH_SHORT).show()
             return
         }
-        if (adapter?.isEnabled == false) {
+        if (nfcAdapter?.isEnabled == false) {
             Toast.makeText(applicationContext, "NFC not enabled.", Toast.LENGTH_SHORT).show()
             return
         }
